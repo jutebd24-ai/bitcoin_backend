@@ -1,0 +1,972 @@
+{
+  "info": {
+    "name": "Bitcoin Trading Platform API",
+    "description": "Complete API collection for Bitcoin Trading Platform with authentication, market data, trading signals, user management, and admin features.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "    pm.collectionVariables.set('userId', response.user.id);",
+                  "    pm.test('Registration successful', function () {",
+                  "        pm.expect(response.user.email).to.exist;",
+                  "        pm.expect(response.token).to.exist;",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "    pm.collectionVariables.set('userId', response.user.id);",
+                  "    pm.test('Login successful', function () {",
+                  "        pm.expect(response.user.email).to.exist;",
+                  "        pm.expect(response.token).to.exist;",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "settings"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationEmail\": true,\n  \"notificationSms\": false,\n  \"theme\": \"dark\",\n  \"language\": \"en\",\n  \"timezone\": \"UTC\",\n  \"currency\": \"USD\",\n  \"defaultChartType\": \"candlestick\",\n  \"defaultTimeframe\": \"1h\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "settings"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Patch User Settings",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": \"light\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "settings"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset User Settings",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/settings/reset",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "settings", "reset"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export User Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/settings/export",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "settings", "export"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Import User Settings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationEmail\": true,\n  \"theme\": \"dark\",\n  \"language\": \"en\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/settings/import",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "settings", "import"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Progress & Achievements",
+      "item": [
+        {
+          "name": "Get User Progress",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "progress"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Achievements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/achievements",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "achievements"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Milestones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/milestones",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "milestones"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Market Data",
+      "item": [
+        {
+          "name": "Get Market Price",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/market/price/BTCUSDT",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "market", "price", "BTCUSDT"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Market Prices (Multiple)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/market/prices?symbols=BTCUSDT,ETHUSDT,SOLUSDT",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "market", "prices"],
+              "query": [
+                {
+                  "key": "symbols",
+                  "value": "BTCUSDT,ETHUSDT,SOLUSDT"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Tickers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tickers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tickers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Enabled Tickers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tickers/enabled",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tickers", "enabled"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tickers with Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tickers?search=BTC&limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tickers"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "BTC"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "OHLC Data",
+      "item": [
+        {
+          "name": "Get OHLC Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ohlc?ticker=BTCUSDT&interval=1h&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ohlc"],
+              "query": [
+                {
+                  "key": "ticker",
+                  "value": "BTCUSDT"
+                },
+                {
+                  "key": "interval",
+                  "value": "1h"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get OHLC Data with Date Range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ohlc?ticker=BTCUSDT&interval=1d&start=2024-01-01&end=2024-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ohlc"],
+              "query": [
+                {
+                  "key": "ticker",
+                  "value": "BTCUSDT"
+                },
+                {
+                  "key": "interval",
+                  "value": "1d"
+                },
+                {
+                  "key": "start",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "end",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Trading Signals",
+      "item": [
+        {
+          "name": "Get Trading Signals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/signals/BTCUSDT",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "signals", "BTCUSDT"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Signals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/signals?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "signals"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Manual Signal (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ticker\": \"BTCUSDT\",\n  \"signalType\": \"buy\",\n  \"price\": \"65000\",\n  \"note\": \"Manual signal for testing\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/signals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "signals"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "TradingView Webhook Alert",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Webhook-Secret",
+                "value": "your-webhook-secret"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ticker\": \"BTCUSDT\",\n  \"action\": \"buy\",\n  \"price\": 65000,\n  \"timeframe\": \"1h\",\n  \"strategy\": \"RSI Divergence\",\n  \"comment\": \"RSI bullish divergence detected\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/webhook/alerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "webhook", "alerts"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Chart Data",
+      "item": [
+        {
+          "name": "Get Heatmap Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/chart/heatmap/BTC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "chart", "heatmap", "BTC"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cycle Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/chart/cycle/BTC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "chart", "cycle", "BTC"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Forecast Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/chart/forecast/BTC",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "chart", "forecast", "BTC"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Get User Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/subscriptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "subscriptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tickerId\": \"ticker-id-here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/subscriptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "subscriptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Subscription",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/subscriptions/:subscriptionId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user", "subscriptions", ":subscriptionId"],
+              "variable": [
+                {
+                  "key": "subscriptionId",
+                  "value": "subscription-id-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Send Test Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"email\",\n  \"recipient\": \"test@example.com\",\n  \"subject\": \"Test Signal Alert\",\n  \"message\": \"This is a test notification\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notifications", "test"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notification History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/notifications/history?limit=20&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "notifications", "history"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin - User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"firstName\": \"New\",\n  \"lastName\": \"User\",\n  \"role\": \"user\",\n  \"subscriptionTier\": \"free\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Updated\",\n  \"lastName\": \"Name\",\n  \"role\": \"admin\",\n  \"subscriptionTier\": \"premium\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "user-id-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "user-id-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin - Ticker Management",
+      "item": [
+        {
+          "name": "Get All Tickers (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/tickers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "tickers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Ticker",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"NEWTICKER\",\n  \"description\": \"New Trading Pair\",\n  \"category\": \"DeFi\",\n  \"isEnabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/tickers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "tickers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Ticker",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"BTCUSDT\",\n  \"description\": \"Bitcoin to USDT\",\n  \"isEnabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/tickers/:tickerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "tickers", ":tickerId"],
+              "variable": [
+                {
+                  "key": "tickerId",
+                  "value": "ticker-id-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Ticker",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/tickers/:tickerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "tickers", ":tickerId"],
+              "variable": [
+                {
+                  "key": "tickerId",
+                  "value": "ticker-id-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin - Logs & Analytics",
+      "item": [
+        {
+          "name": "Get Admin Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/logs?limit=50&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "logs"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get System Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "analytics"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payments & Subscriptions",
+      "item": [
+        {
+          "name": "Create Payment Intent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": \"premium-monthly\",\n  \"amount\": 2999,\n  \"currency\": \"usd\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/create-intent",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payments", "create-intent"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subscription Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payments", "plans"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/payments/history",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payments", "history"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
